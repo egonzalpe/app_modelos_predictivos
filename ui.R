@@ -1,33 +1,72 @@
-#
-# This is the user-interface definition of a Shiny web application. You can
-# run the application by clicking 'Run App' above.
-#
-# Find out more about building applications with Shiny here:
-# 
-#    http://shiny.rstudio.com/
-#
-
 library(shiny)
+library(shinythemes)
+library(forecast)
 
-# Define UI for application that draws a histogram
-shinyUI(fluidPage(
+shinyUI(fluidPage(theme = shinytheme("flatly"),
   
-  # Application title
-  titlePanel("Old Faithful Geyser Data"),
+  titlePanel("Programa de Modelos Predictivos",windowTitle ="Programa de Modelos Predictivos" ),
   
-  # Sidebar with a slider input for number of bins 
   sidebarLayout(
     sidebarPanel(
-       sliderInput("bins",
-                   "Number of bins:",
-                   min = 1,
-                   max = 50,
-                   value = 30)
+      fileInput('file1', 'Importe set de datos',
+                accept=c('text/csv', 
+                         'text/comma-separated-values,text/plain', 
+                         '.csv')),
+
+      checkboxInput('header', 'Encabezado', TRUE),
+      
+      # radioButtons('sep', 'Separator',
+      #              c(Coma=',',
+      #                'Punto y coma'=';',
+      #                Tabulador='\t'),
+      #              ','),
+      # radioButtons('quote', 'Quote',
+      #              c(Ninguno='',
+      #                'Comilla Doble'='"',
+      #                'Comilla simple'="'"),
+      #              '"'),
+      
+      tags$hr(),
+      radioButtons('frecuencia_usuario', 'Frecuencia',
+                   c('Mensual'=12,
+                     'Trimestral'=4,'Cuatrimestral'=3,'Semestral'=2,'Anual'=1),
+                   '12'),
+      tags$hr(),
+      radioButtons('t_suavizado', 'suavizado',
+                   c('Exponencial Simple'=1,
+                     'Exponencial Doble'=2,
+                     'Exponencial Triple Aditiva'=3,
+                     'Exponencial Triple Multiplicativas'=4),
+                   '1'),
+      tags$hr(),
+      radioButtons('t_regresion', 'Regresion',
+                   c('Simple'=1,
+                     'Multiple'=2),
+                   '1'),
+      tags$hr(),
+      sliderInput("n", "Periodos:",
+                  min=0, max=12, value=6)
+      
     ),
     
-    # Show a plot of the generated distribution
     mainPanel(
-       plotOutput("distPlot")
+      tabsetPanel(
+        tabPanel("Grafico",
+                 plotOutput("plot1"),
+                 plotOutput("plot2")
+                 ), 
+        
+        
+
+        tabPanel("Resumen", verbatimTextOutput("resumen"),verbatimTextOutput("error")), 
+        tabPanel("Histograma", plotOutput("histograma"))
+        #tabPanel("TablaFit", verbatimTextOutput("tablaFit"))
+        
+      )
     )
   )
-))
+)
+)
+
+
+prueba con esteban
